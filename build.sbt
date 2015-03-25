@@ -45,24 +45,30 @@ lazy val root = project.in(file(".")).settings(
     (run in operation in Compile).evaluated
   }
 ).aggregate(
-    model, operation
+    model, common, operation
   )
 
 lazy val model = project.settings(
   libraryDependencies ++= Seq()
 )
 
+lazy val common = project.settings(
+  libraryDependencies ++= Seq(
+    "com.typesafe.akka" %% "akka-actor" % akkaVersion
+  )
+)
+
 lazy val operation = project.settings(
   libraryDependencies ++= Seq(
-    "com.typesafe" % "config" % configVersion,
-    "com.pi4j" % "pi4j-core" % pi4jVersion,
+    "com.pi4j" % "pi4j-core" % pi4jVersion withSources() withJavadoc(),
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-remote" % akkaVersion,
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+    "com.typesafe" % "config" % configVersion,
     "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion,
     "org.slf4j" % "slf4j-api" % slf4jVersion,
     "ch.qos.logback" % "logback-classic" % logbackVersion,
     "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
   )
-).dependsOn(model)
+).dependsOn(model, common)
 
