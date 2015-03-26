@@ -73,3 +73,5 @@ lazy val server = project.settings(
   )
 ).dependsOn(model, common)
 
+mainClass in assembly := Some("nl.proja.pishake.PiShake")
+
