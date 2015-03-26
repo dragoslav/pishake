@@ -23,7 +23,14 @@ trait ActorSupport {
   this: Actor =>
 
   def actorOf(actorDescription: ActorDescription, args: Any*)(implicit mailbox: String = "akka.actor.default-mailbox") =
-    context.system.actorOf(actorDescription.props(args: _*).withMailbox(mailbox), actorDescription.name)
+    ActorSupport.actorOf(actorDescription)(mailbox, context.system)
 
-  def actorFor(actorDescription: ActorDescription) = context.actorSelection(s"../${actorDescription.name}")
+  def actorFor(actorDescription: ActorDescription) =
+    context.actorSelection(s"../${actorDescription.name}")
+
+  def remoteActorFor(remote: String, actor: String): ActorSelection =
+    context.actorSelection(s"$remote/user/$actor")
+
+  def remoteActorFor(remote: String, actorDescription: ActorDescription): ActorSelection =
+    remoteActorFor(remote, actorDescription.name)
 }

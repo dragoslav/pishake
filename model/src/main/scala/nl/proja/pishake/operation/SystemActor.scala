@@ -4,6 +4,6 @@ import nl.proja.pishake.common.ActorReference
 
 object SystemActor extends ActorReference {
 
-  object Info
+  object Info extends Serializable
 
 }
