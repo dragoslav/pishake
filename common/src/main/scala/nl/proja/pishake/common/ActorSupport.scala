@@ -1,7 +1,12 @@
-package nl.proja.pishake
+package nl.proja.pishake.common
 
 import akka.actor._
 
+
+trait ActorReference {
+
+  def name: String = Text.toSnakeCase(getClass.getSimpleName)
+}
 
 trait ActorDescription {
   def props(args: Any*): Props
@@ -10,7 +15,7 @@ trait ActorDescription {
 }
 
 object ActorSupport {
-  def actorOf(actorDescription: ActorDescription, args: Any*)(implicit  mailbox: String = "akka.actor.default-mailbox", actorSystem: ActorSystem) =
+  def actorOf(actorDescription: ActorDescription, args: Any*)(implicit mailbox: String = "akka.actor.default-mailbox", actorSystem: ActorSystem) =
     actorSystem.actorOf(actorDescription.props(args: _*).withMailbox(mailbox), actorDescription.name)
 }
 

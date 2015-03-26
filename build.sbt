@@ -42,15 +42,16 @@ val configVersion = "1.2.1"
 lazy val root = project.in(file(".")).settings(
   packagedArtifacts in file(".") := Map.empty,
   run := {
-    (run in operation in Compile).evaluated
+    (run in server in Compile).evaluated
   }
 ).aggregate(
-    model, common, operation
+    model, common, server
   )
 
 lazy val model = project.settings(
-  libraryDependencies ++= Seq()
-)
+  libraryDependencies ++= Seq(
+  )
+).dependsOn(common)
 
 lazy val common = project.settings(
   libraryDependencies ++= Seq(
@@ -58,7 +59,7 @@ lazy val common = project.settings(
   )
 )
 
-lazy val operation = project.settings(
+lazy val server = project.settings(
   libraryDependencies ++= Seq(
     "com.pi4j" % "pi4j-core" % pi4jVersion withSources() withJavadoc(),
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
