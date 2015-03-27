@@ -11,6 +11,7 @@ import nl.proja.pishake.operation.GpioOut._
 import nl.proja.pishake.util.{ActorDescription, ActorSupport}
 
 import scala.collection.JavaConversions._
+import scala.languageFeature.postfixOps
 
 object GpioController extends ActorDescription {
 
@@ -37,13 +38,9 @@ class GpioController extends Actor with ActorLogging with ActorSupport {
     case ReadState(pin) => GpioConversion.asState(input(pin).getState)
   }
 
-  def input(pin: Gpio.Pin): GpioPinDigitalInput = gpio.getProvisionedPins.toList.find(_.getName == GpioConversion.asPin(pin).getName) match {
-    case None => gpio.provisionDigitalInputPin(pin)
-    case Some(pi4jPin) if pi4jPin.getMode == PinMode.DIGITAL_INPUT => pi4jPin.asInstanceOf[GpioPinDigitalInput]
-    case Some(old) =>
-      gpio.unprovisionPin(old)
+  def input(pin: Gpio.Pin): GpioPinDigitalInput = {
 
-      val pi4jPin = gpio.provisionDigitalInputPin(pin)
+    def listen: (GpioPinDigitalInput => GpioPinDigitalInput) = { pi4jPin =>
       val receiver = sender()
       pi4jPin.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF)
       pi4jPin.addListener(new GpioPinListenerDigital {
@@ -52,7 +49,17 @@ class GpioController extends Actor with ActorLogging with ActorSupport {
         }
       })
       pi4jPin
+    }
+
+    listen(gpio.getProvisionedPins.toList.find(_.getName == GpioConversion.asPin(pin).getName) match {
+      case None => gpio.provisionDigitalInputPin(pin)
+      case Some(pi4jPin) if pi4jPin.getMode == PinMode.DIGITAL_INPUT => pi4jPin.asInstanceOf[GpioPinDigitalInput]
+      case Some(pi4jPin) =>
+        gpio.unprovisionPin(pi4jPin)
+        gpio.provisionDigitalInputPin(pin)
+    })
   }
+
 
   def output(pin: Gpio.Pin): GpioPinDigitalOutput = gpio.getProvisionedPins.toList.find(_.getName == GpioConversion.asPin(pin).getName) match {
     case None => gpio.provisionDigitalOutputPin(pin)
