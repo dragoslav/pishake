@@ -2,7 +2,7 @@ package nl.proja.pishake
 
 import akka.actor.ActorSystem
 import nl.proja.pishake.actor.{GpioController, SystemActor}
-import nl.proja.pishake.common.ActorSupport
+import nl.proja.pishake.util.ActorSupport
 
 
 object PiShake extends App {

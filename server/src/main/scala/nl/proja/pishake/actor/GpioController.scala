@@ -1,17 +1,16 @@
 package nl.proja.pishake.actor
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, Props}
 import com.pi4j.io.gpio._
 import com.pi4j.io.gpio.event.{GpioPinDigitalStateChangeEvent, GpioPinListenerDigital}
 import nl.proja.pishake.actor.GpioConversion._
-import nl.proja.pishake.common.{ActorDescription, ActorSupport}
 import nl.proja.pishake.model.Gpio
-import nl.proja.pishake.operation.GpioController.{ProvisionDigitalInput, ProvisionDigitalOutput, Reset, UnProvision}
 import nl.proja.pishake.operation.GpioIn
+import nl.proja.pishake.operation.GpioIn.ReadState
 import nl.proja.pishake.operation.GpioOut._
+import nl.proja.pishake.util.{ActorDescription, ActorSupport}
 
-import scala.collection.mutable
-import scala.util.Try
+import scala.collection.JavaConversions._
 
 object GpioController extends ActorDescription {
 
@@ -22,93 +21,44 @@ class GpioController extends Actor with ActorLogging with ActorSupport {
 
   lazy val gpio = GpioFactory.getInstance
 
-  val pins = new mutable.LinkedHashMap[Gpio.Pin, GpioLink]
-
   def receive: Receive = {
-    case ProvisionDigitalOutput(pin, state) => GpioConversion.asState(state) match {
-      case None => Try(provision(pin, gpio.provisionDigitalOutputPin(pin)))
-      case Some(s) => Try(provision(pin, gpio.provisionDigitalOutputPin(pin, s)))
-    }
+    case Low(pin) => output(pin).low()
 
-    case ProvisionDigitalInput(pin, resistance) => GpioConversion.asResistance(resistance) match {
-      case None => Try(provision(pin, gpio.provisionDigitalInputPin(pin)))
-      case Some(r) => Try(provision(pin, gpio.provisionDigitalInputPin(pin, r)))
-    }
+    case High(pin) => output(pin).high()
 
-    case UnProvision(pin) => pins.remove(pin) match {
-      case Some(link) => Try(gpio.unprovisionPin(link.pin))
-      case _ =>
-    }
+    case Toggle(pin) => output(pin).toggle()
 
-    case Reset =>
-      pins.values.foreach(link => Try(gpio.unprovisionPin(link.pin)))
-      pins.clear()
+    case Pulse(pin, duration, state) => output(pin).pulse(duration.toMillis, state)
 
-    case Low(pin) => pins.get(pin) match {
-      case Some(link) => link.pin match {
-        case out: GpioPinDigitalOutput => Try(out.low())
-        case _ =>
-      }
-      case _ =>
-    }
+    case Blink(pin, delay, duration, state) => output(pin).blink(duration.toMillis, state)
 
-    case High(pin) => pins.get(pin) match {
-      case Some(link) => link.pin match {
-        case out: GpioPinDigitalOutput => Try(out.high())
-        case _ =>
-      }
-      case _ =>
-    }
+    case SetState(pin, state) => output(pin).setState(state)
 
-    case Toggle(pin) => pins.get(pin) match {
-      case Some(link) => link.pin match {
-        case out: GpioPinDigitalOutput => Try(out.toggle())
-        case _ =>
-      }
-      case _ =>
-    }
-
-    case Pulse(pin, duration, state) => pins.get(pin) match {
-      case Some(link) => link.pin match {
-        case out: GpioPinDigitalOutput => Try(out.pulse(duration.toMillis, state))
-        case _ =>
-      }
-      case _ =>
-    }
-
-    case Blink(pin, delay, duration, state) => pins.get(pin) match {
-      case Some(link) => link.pin match {
-        case out: GpioPinDigitalOutput => Try(out.blink(duration.toMillis, state))
-        case _ =>
-      }
-      case _ =>
-    }
-
-    case State(pin, state) => pins.get(pin) match {
-      case Some(link) => link.pin match {
-        case out: GpioPinDigitalOutput => Try(out.setState(state))
-        case _ =>
-      }
-      case _ =>
-    }
-
+    case ReadState(pin) => GpioConversion.asState(input(pin).getState)
   }
 
-  def provision(pin: Gpio.Pin, pi4jPin: GpioPin) = {
-    pins += pin -> GpioLink(pi4jPin, sender())
+  def input(pin: Gpio.Pin): GpioPinDigitalInput = gpio.getProvisionedPins.toList.find(_.getName == GpioConversion.asPin(pin).getName) match {
+    case None => gpio.provisionDigitalInputPin(pin)
+    case Some(pi4jPin) if pi4jPin.getMode == PinMode.DIGITAL_INPUT => pi4jPin.asInstanceOf[GpioPinDigitalInput]
+    case Some(old) =>
+      gpio.unprovisionPin(old)
 
-    if (pi4jPin.isInstanceOf[GpioPinDigital]) {
+      val pi4jPin = gpio.provisionDigitalInputPin(pin)
+      val receiver = sender()
       pi4jPin.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF)
       pi4jPin.addListener(new GpioPinListenerDigital {
         def handleGpioPinDigitalStateChangeEvent(event: GpioPinDigitalStateChangeEvent) {
-          pins.get(pin) match {
-            case Some(link) => link.owner ! GpioIn.State(pin, event.getState)
-            case _ =>
-          }
+          receiver ! GpioIn.State(pin, event.getState)
         }
       })
-    }
+      pi4jPin
+  }
+
+  def output(pin: Gpio.Pin): GpioPinDigitalOutput = gpio.getProvisionedPins.toList.find(_.getName == GpioConversion.asPin(pin).getName) match {
+    case None => gpio.provisionDigitalOutputPin(pin)
+    case Some(pi4jPin) if pi4jPin.getMode == PinMode.DIGITAL_OUTPUT => pi4jPin.asInstanceOf[GpioPinDigitalOutput]
+    case Some(pi4jPin) =>
+      gpio.unprovisionPin(pi4jPin)
+      gpio.provisionDigitalOutputPin(pin)
   }
 }
-
-case class GpioLink(pin: GpioPin, owner: ActorRef)

@@ -2,9 +2,9 @@ package nl.proja.pishake.actor
 
 import akka.actor._
 import com.pi4j.system.{NetworkInfo, SystemInfo}
-import nl.proja.pishake.common.{ActorDescription, ActorSupport}
 import nl.proja.pishake.model._
 import nl.proja.pishake.operation.SystemActor.Info
+import nl.proja.pishake.util.{ActorDescription, ActorSupport}
 
 import scala.language.postfixOps
 

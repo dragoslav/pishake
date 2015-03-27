@@ -1,4 +1,4 @@
-package nl.proja.pishake.common
+package nl.proja.pishake.util
 
 import akka.util.Timeout
 
@@ -7,7 +7,7 @@ import scala.util.{Failure, Success}
 
 trait FutureSupport {
 
-  def offLoad(future: Future[Any])(implicit timeout: Timeout): Any = {
+  def offload(future: Future[Any])(implicit timeout: Timeout): Any = {
     Await.ready(future, timeout.duration)
     future.value.get match {
       case Success(result) => result

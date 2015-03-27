@@ -45,19 +45,15 @@ lazy val root = project.in(file(".")).settings(
     (run in server in Compile).evaluated
   }
 ).aggregate(
-    model, common, server
+    common, server
   )
-
-lazy val model = project.settings(
-  libraryDependencies ++= Seq(
-  )
-).dependsOn(common)
 
 lazy val common = project.settings(
   libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion
   )
 )
+
 
 lazy val server = project.settings(
   libraryDependencies ++= Seq(
@@ -71,7 +67,7 @@ lazy val server = project.settings(
     "ch.qos.logback" % "logback-classic" % logbackVersion,
     "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
   )
-).dependsOn(model, common)
+).dependsOn(common)
 
 mainClass in assembly := Some("nl.proja.pishake.PiShake")
 

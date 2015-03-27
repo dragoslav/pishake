@@ -1,4 +1,4 @@
-package nl.proja.pishake.common
+package nl.proja.pishake.util
 
 object Text {
 

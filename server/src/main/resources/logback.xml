@@ -9,7 +9,7 @@
 
     <logger name="nl.proja" level="TRACE"/>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
 

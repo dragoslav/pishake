@@ -2,7 +2,7 @@ package nl.proja.pishake.model
 
 object Gpio {
 
-  sealed trait State
+  sealed trait State extends Serializable
 
   object State {
 
@@ -12,7 +12,7 @@ object Gpio {
 
   }
 
-  sealed trait PullResistance
+  sealed trait PullResistance extends Serializable
 
   object PullResistance {
 
@@ -24,7 +24,7 @@ object Gpio {
 
   }
 
-  sealed trait Mode
+  sealed trait Mode extends Serializable
 
   object Mode {
 
@@ -38,7 +38,7 @@ object Gpio {
 
   }
 
-  sealed trait Pin
+  sealed trait Pin extends Serializable
 
   object Pin {
 
