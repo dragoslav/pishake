@@ -9,7 +9,11 @@ object PiShake extends App {
 
   implicit val system = ActorSystem("PiShake")
 
-  ActorSupport.actorOf(SystemActor)
-  ActorSupport.actorOf(GpioController)
-  ActorSupport.actorOf(DS18B20Controller)
+  def run(implicit system: ActorSystem) = {
+    ActorSupport.actorOf(SystemActor)
+    ActorSupport.actorOf(GpioController)
+    ActorSupport.actorOf(DS18B20Controller)
+  }
+
+  run
 }

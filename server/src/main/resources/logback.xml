@@ -7,9 +7,9 @@
         </encoder>
     </appender>
 
-    <logger name="nl.proja" level="TRACE"/>
+    <logger name="nl.proja" level="INFO"/>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
 
