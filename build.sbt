@@ -1,6 +1,5 @@
 organization in ThisBuild := "nl.proja"
 
-
 name := """PiShake"""
 
 description := """PiShake"""

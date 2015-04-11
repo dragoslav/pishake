@@ -28,9 +28,6 @@ trait ActorSupport {
   def actorFor(actorDescription: ActorDescription) =
     context.actorSelection(s"../${actorDescription.name}")
 
-  def remoteActorFor(remote: String, actor: String): ActorSelection =
-    context.actorSelection(s"$remote/user/$actor")
-
-  def remoteActorFor(remote: String, actorDescription: ActorDescription): ActorSelection =
-    remoteActorFor(remote, actorDescription.name)
+  def actorForPath(path: String, actor: String): ActorSelection =
+    context.actorSelection(s"$path/user/$actor")
 }
