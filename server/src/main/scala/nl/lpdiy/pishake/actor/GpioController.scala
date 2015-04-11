@@ -1,14 +1,14 @@
-package nl.proja.pishake.actor
+package nl.lpdiy.pishake.actor
 
 import akka.actor.{Actor, ActorLogging, Props}
 import com.pi4j.io.gpio._
 import com.pi4j.io.gpio.event.{GpioPinDigitalStateChangeEvent, GpioPinListenerDigital}
-import nl.proja.pishake.actor.GpioConversion._
-import nl.proja.pishake.model.Gpio
-import nl.proja.pishake.operation.GpioIn
-import nl.proja.pishake.operation.GpioIn.ReadState
-import nl.proja.pishake.operation.GpioOut._
-import nl.proja.pishake.util.{ActorDescription, ActorSupport}
+import nl.lpdiy.pishake.actor.GpioConversion._
+import nl.lpdiy.pishake.model.Gpio
+import nl.lpdiy.pishake.operation.GpioIn
+import nl.lpdiy.pishake.operation.GpioIn.ReadState
+import nl.lpdiy.pishake.operation.GpioOut._
+import nl.lpdiy.pishake.util.{ActorDescription, ActorSupport}
 
 import scala.collection.JavaConversions._
 import scala.languageFeature.postfixOps

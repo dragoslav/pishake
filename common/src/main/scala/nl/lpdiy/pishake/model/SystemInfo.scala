@@ -1,4 +1,4 @@
-package nl.proja.pishake.model
+package nl.lpdiy.pishake.model
 
 case class SystemInfo(hardwareInfo: HardwareInfo, memoryInfo: MemoryInfo, operatingSystemInfo: OperatingSystemInfo, javaEnvironmentInfo: JavaEnvironmentInfo, networkInfo: NetworkInfo, codecInfo: CodecInfo, clockFrequencyInfo: ClockFrequencyInfo)
 

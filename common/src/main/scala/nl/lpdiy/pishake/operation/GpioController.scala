@@ -1,7 +1,8 @@
-package nl.proja.pishake.operation
+package nl.lpdiy.pishake.operation
 
-import nl.proja.pishake.model.Gpio
-import nl.proja.pishake.util.ActorReference
+import nl.lpdiy.pishake.model.Gpio.Pin
+import nl.lpdiy.pishake.model.Gpio
+import nl.lpdiy.pishake.util.ActorReference
 
 import scala.concurrent.duration.{FiniteDuration, _}
 import scala.language.postfixOps
@@ -21,7 +22,7 @@ object GpioIn {
 object GpioOut {
 
   trait OutOperation {
-    def pin: Gpio.Pin
+    def pin: Pin
   }
 
   case class Low(pin: Gpio.Pin) extends OutOperation

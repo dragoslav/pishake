@@ -1,4 +1,4 @@
-organization in ThisBuild := "nl.proja"
+organization in ThisBuild := "nl.lpdiy"
 
 name := """PiShake"""
 
@@ -14,8 +14,7 @@ publishMavenStyle := true
 
 resolvers in ThisBuild ++= Seq(
   "Typesafe Repo" at "http://repo.typesafe.com/typesafe/releases/",
-  "Sonatype OSS Maven Repository" at "https://oss.sonatype.org/content/groups/public",
-  Resolver.mavenLocal
+  "Sonatype OSS Maven Repository" at "https://oss.sonatype.org/content/groups/public"
 )
 
 libraryDependencies in ThisBuild ++= Seq(
@@ -30,7 +29,7 @@ scalacOptions += "-target:jvm-1.8"
 
 javacOptions ++= Seq("-encoding", "UTF-8")
 
-lazy val root = project.in(file(".")).settings(
+lazy val root = Project(id = "pishake", base = file(".")).settings(
   packagedArtifacts in file(".") := Map.empty,
   run := {
     (run in server in Compile).evaluated
@@ -39,13 +38,13 @@ lazy val root = project.in(file(".")).settings(
     common, server
   )
 
-lazy val common = project.settings(
+lazy val common = Project(id = "pishake-common", base = file("common")).settings(
   libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-actor" % "2.3.9"
   )
 )
 
-lazy val server = project.settings(
+lazy val server = Project(id = "pishake-server", base = file("server")).settings(
   libraryDependencies ++= Seq(
     "com.pi4j" % "pi4j-core" % "1.0-SNAPSHOT" withSources() withJavadoc(),
     "com.typesafe.akka" %% "akka-actor" % "2.3.9",
@@ -59,5 +58,5 @@ lazy val server = project.settings(
   )
 ).dependsOn(common)
 
-mainClass in assembly := Some("nl.proja.pishake.PiShake")
+mainClass in assembly := Some("nl.lpdiy.pishake.PiShake")
 

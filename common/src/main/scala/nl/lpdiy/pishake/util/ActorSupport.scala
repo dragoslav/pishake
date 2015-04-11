@@ -1,4 +1,4 @@
-package nl.proja.pishake.util
+package nl.lpdiy.pishake.util
 
 import akka.actor._
 

@@ -1,7 +1,7 @@
-package nl.proja.pishake.actor
+package nl.lpdiy.pishake.actor
 
 import com.pi4j.io.gpio.{Pin, PinPullResistance, PinState, RaspiPin}
-import nl.proja.pishake.model.Gpio
+import nl.lpdiy.pishake.model.Gpio
 
 import scala.language.implicitConversions
 

@@ -1,8 +1,10 @@
-package nl.proja.pishake
+package nl.lpdiy.pishake
 
 import akka.actor.ActorSystem
-import nl.proja.pishake.actor.{DS18B20Controller, GpioController, SystemActor}
-import nl.proja.pishake.util.ActorSupport
+import nl.lpdiy.pishake.actor.{DS18B20Controller, GpioController}
+import nl.lpdiy.pishake.util.ActorSupport
+import nl.lpdiy.pishake.actor.{DS18B20Controller, GpioController, SystemActor}
+import nl.lpdiy.pishake.util.ActorSupport
 
 
 object PiShake extends App {

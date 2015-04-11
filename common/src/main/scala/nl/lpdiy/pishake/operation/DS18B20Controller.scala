@@ -1,8 +1,8 @@
-package nl.proja.pishake.operation
+package nl.lpdiy.pishake.operation
 
 import java.time.OffsetDateTime
 
-import nl.proja.pishake.util.ActorReference
+import nl.lpdiy.pishake.util.ActorReference
 
 
 object DS18B20Controller extends ActorReference {

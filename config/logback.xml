@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="nl.proja" level="INFO"/>
+    <logger name="nl.lpdiy" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

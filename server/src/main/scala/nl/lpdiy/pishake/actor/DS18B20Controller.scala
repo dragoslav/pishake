@@ -1,8 +1,8 @@
-package nl.proja.pishake.actor
+package nl.lpdiy.pishake.actor
 
 import akka.actor.{Actor, ActorLogging, Props}
-import nl.proja.pishake.operation.DS18B20Controller.{ReadTemperature, Temperature}
-import nl.proja.pishake.util.{ActorDescription, ActorSupport}
+import nl.lpdiy.pishake.operation.DS18B20Controller.{ReadTemperature, Temperature}
+import nl.lpdiy.pishake.util.{ActorDescription, ActorSupport}
 
 import scala.language.postfixOps
 import scala.sys.process._

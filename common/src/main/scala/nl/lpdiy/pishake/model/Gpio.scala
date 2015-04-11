@@ -1,4 +1,4 @@
-package nl.proja.pishake.model
+package nl.lpdiy.pishake.model
 
 object Gpio {
 

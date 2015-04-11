@@ -1,6 +1,6 @@
-package nl.proja.pishake.operation
+package nl.lpdiy.pishake.operation
 
-import nl.proja.pishake.util.ActorReference
+import nl.lpdiy.pishake.util.ActorReference
 
 object SystemActor extends ActorReference {
 
